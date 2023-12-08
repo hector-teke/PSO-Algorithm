@@ -6,7 +6,7 @@ class Individual:
         self.quality = None
         self.bposition = []
         self.bquality = None
-        self.velocity = 0
+        self.velocity = [0]
 
     def __str__(self):
         return f"Individual:\nPosition={self.position}\nQuality={self.quality} \tVelocity:{self.velocity}\nBest Po.={self.bposition}\nBest Quality={self.bquality})"
@@ -42,6 +42,9 @@ def update_global(population, function):
         if i.bquality > gquality:
             gquality = i.bquality
             gbest = i.bposition
+
+def weight(wstart=0.9, wend=0.4, iter, itotal):
+    return wstart - (((wstart - wend) * iter) / itotal)
 
 
 
