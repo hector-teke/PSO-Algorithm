@@ -1,3 +1,4 @@
+import math
 import random
 import numpy as np
 
@@ -87,12 +88,12 @@ def weight(iter, itotal, wstart=0.9, wend=0.4):     #iter: current iteration   i
 
 def new_position(ind, bound, function):       #Updates the position and quality of the individual
     ind.position += ind.velocity
-    ind.position = np.clip(ind.position, -bound, bound)
+    ind.position = np.round(np.clip(ind.position, -bound, bound), decimals=4)
     ind.quality = function(ind.position)
 
 def update_velocity(ind, weight, bound, c1=1.49618, c2=1.49618):
     global gbest
-    # el problema es que cuando la actual coincide con la mejor personal y global entonces velocity es 0
+
     s1 = weight * ind.velocity
     s2 = c1 * np.random.rand() * (ind.bposition - ind.position)
     s3 = c2 * np.random.rand() * (gbest - ind.position)
@@ -112,7 +113,7 @@ def pso(bound=5.12, p_size=20, dimension=10, function=sum, iterations=1000):
     for i in range(iterations):
 
         for ind in population:          #For each individual
-            print("Current individual's position: ", ind.position, "Quality: ", ind.quality, "Vel: ", ind.velocity)
+            #print("Current individual's position: ", ind.position, "Quality: ", ind.quality, "Vel: ", ind.velocity)
             w = weight(i, iterations)
             update_velocity(ind, w, bound)  #Update the velocity
             new_position(ind, bound, function)        #Update the position and quality
@@ -123,7 +124,7 @@ def pso(bound=5.12, p_size=20, dimension=10, function=sum, iterations=1000):
 
         update_global(population)       #Update global best and global quality
         history.append(gquality)
-        print(f"{i}\t BestQuality = {gquality}")
+        #print(f"{i}\t BestQuality = {gquality}")
 
     #Return the best solution found
     return gbest, gquality, history
@@ -136,16 +137,12 @@ if __name__ == '__main__':
 
     f = ObjFunction()
 
-    best, quality, history = pso(5, 3, 2, function=sum, iterations=4)
+    best, quality, history = pso(bound=5.12, p_size=20, function=f.sphere, iterations=1000)
 
     print("Best: ", best)
     print("Quality: ", quality)
     print(history)
 
-    """population = create_first(5.12, 20, 10, f.sphere)
-
-    for i in population:
-        print(i.quality)"""
 
 
 
